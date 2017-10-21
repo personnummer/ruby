@@ -14,7 +14,7 @@ Then run `bundle install`
 
 ## Example
 
-```javascript
+```ruby
 require 'personnummer'
 
 puts Personnummer::valid("0001010107")
