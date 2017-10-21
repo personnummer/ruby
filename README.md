@@ -2,6 +2,14 @@
 
 Validate Swedish social security numbers.
 
+## Installation
+
+In your `Gemfile`
+
+```
+gem 'personnummer', :git => 'git://github.com/personnummer/ruby.git'
+```
+
 ## Example
 
 ```javascript
