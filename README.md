@@ -4,11 +4,13 @@ Validate Swedish social security numbers.
 
 ## Installation
 
-In your `Gemfile`
+Add this to your `Gemfile`
 
 ```
-gem 'personnummer', :git => 'git://github.com/personnummer/ruby.git'
+gem 'personnummer', :git => 'https://github.com/personnummer/ruby.git'
 ```
+
+Then run `bundle install`
 
 ## Example
 
