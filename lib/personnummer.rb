@@ -2,6 +2,7 @@
 require 'date'
 
 class Personnummer
+    # luhn will test if the given string is a valid luhn string.
     def self.luhn(str)
         v = 0
         sum = 0
@@ -17,7 +18,8 @@ class Personnummer
         
         return ((sum.to_f / 10).ceil * 10 - sum.to_f).to_i
     end
-
+    
+    # testDate will test if date is valid or not.
     def self.testDate(year, month, day)
         begin
             date = Date.new(year, month, day)
@@ -26,7 +28,8 @@ class Personnummer
             return false
         end
     end
-
+    
+    # valid will validate Swedish social security numbers.
     def self.valid(str)
         if !str.respond_to?(:to_s) || !str.respond_to?(:to_i)
             return false
