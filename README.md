@@ -21,7 +21,7 @@ puts Personnummer::valid("0001010107")
 // => True
 ```
 
-See [test/test_personnummer.ruby](test/test_personnummer.rb) for more examples.
+See [test/test_personnummer.rb](test/test_personnummer.rb) for more examples.
 
 ## License
 
