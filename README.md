@@ -18,7 +18,7 @@ Then run `bundle install`
 require 'personnummer'
 
 puts Personnummer::valid("0001010107")
-// => True
+# => True
 ```
 
 See [test/test_personnummer.rb](test/test_personnummer.rb) for more examples.
