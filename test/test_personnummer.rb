@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'personnummer'
 
-class HolaTest < Minitest::Test
+class PersonnummerTest < Minitest::Test
     def test_with_control_digit
         assert_equal true, Personnummer::valid(6403273813)
         assert_equal true, Personnummer::valid('510818-9167')
