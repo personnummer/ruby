@@ -1,0 +1,10 @@
+language: ruby
+before_script:
+  gem install minitest
+rvm:
+  - 2.2.7
+  - 2.3.4
+  - 2.4.1
+  - ruby-head
+  - jruby-9.0.4.0
+  - jruby-head
