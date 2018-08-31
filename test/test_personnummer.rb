@@ -10,6 +10,7 @@ class PersonnummerTest < Minitest::Test
         assert_equal true, Personnummer::valid('196408233234')
         assert_equal true, Personnummer::valid('000101-0107')
         assert_equal true, Personnummer::valid('0001010107')
+        assert_equal true, Personnummer::valid('200002296127')
     end
 
     def test_without_control_digit
