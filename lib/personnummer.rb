@@ -15,26 +15,26 @@ class Personnummer
             end
             sum += v
         end
-        
+
         return ((sum.to_f / 10).ceil * 10 - sum.to_f).to_i
     end
-    
+
     # testDate will test if date is valid or not.
     def self.testDate(year, month, day)
         begin
             date = Date.new(year, month, day)
-            return !(date.year != year || date.month != month || date.mday != day)        
+            return !(date.year != year || date.month != month || date.mday != day)
         rescue ArgumentError
             return false
         end
     end
-    
+
     # valid will validate Swedish social security numbers.
     def self.valid(str)
         if !str.respond_to?(:to_s) || !str.respond_to?(:to_i)
             return false
         end
-        
+
         reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
         match = str.to_s.match(reg)
 
@@ -54,16 +54,12 @@ class Personnummer
             sep = '-'
         end
 
-        if year.to_s.size === 4
-            year = year.substr(2)
-        end
-
         valid = self.luhn(year + month + day + num) == check.to_i && !!check
 
         if valid && self.testDate(year.to_i, month.to_i, day.to_i)
             return valid
         end
-      
+
         return valid && self.testDate(year.to_i, month.to_i, day.to_i - 60)
     end
 end
