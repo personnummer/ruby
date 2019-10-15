@@ -67,7 +67,6 @@ class Personnummer
         if !self.valid(input)
             return false
         end
-        year,month,day = ""
 
         input.to_s
         if input.length < 12
@@ -79,7 +78,7 @@ class Personnummer
         coord = input.match(/[\-|\+]/).to_s
 
         if longFormat
-          if coord == "-" or coord == nil
+          if coord == "-" or coord == ""
             return "19#{date.strftime("%y%m%d")}#{input[-4..-1]}"
           else
             return "20#{date.strftime("%y%m%d")}#{input[-4..-1]}"
