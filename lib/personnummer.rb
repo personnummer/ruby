@@ -62,4 +62,30 @@ class Personnummer
 
         return valid && self.testDate(year.to_i, month.to_i, day.to_i - 60)
     end
+
+    def self.format(input, longFormat = false)
+        if !self.valid(input)
+            return false
+        end
+        year,month,day = ""
+
+        input.to_s
+        if input.length < 12
+          date = Date.parse(input[0..5])
+        else
+          date = Date.parse(input[0..7])
+        end
+
+        coord = input.match(/[\-|\+]/).to_s
+
+        if longFormat
+          if coord == "-" or coord == nil
+            return "19#{date.strftime("%y%m%d")}#{input[-4..-1]}"
+          else
+            return "20#{date.strftime("%y%m%d")}#{input[-4..-1]}"
+          end
+        else
+          return "#{date.strftime("%y%m%d")}#{coord}#{input[-4..-1]}"
+        end
+    end
 end
