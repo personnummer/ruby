@@ -29,6 +29,51 @@ class Personnummer
         end
     end
 
+    def self.getParts(str)
+      str=str.to_s
+
+      reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
+      match = reg.match(str)
+      century = match[1]
+      year = match[2]
+      month = match[3]
+      day = match[4]
+      sep = match[5]
+      num = match[6]
+      check = match[7]
+
+      if !(sep == '-' || sep == '+')
+        if (( century.nil? || !century.length) || Time.new.year - (century + year).to_i < 100)
+          sep = '-'
+        else
+          sep = '+'
+        end
+      end
+
+      if (century.nil? || !century.length)
+        d = Time.new
+        baseYear = 0
+
+        if sep == '+'
+          baseYear = d.year - 100
+        else
+          baseYear = d.year
+        end
+        century = "#{(baseYear - ((baseYear - year.to_i) % 100)).digits[-2..-1].reverse.join('')}"
+      end
+      
+      return [
+        century,
+        year,
+        month,
+        day,
+        sep,
+        num,
+        check
+      ]
+    end
+ 
+
     # valid will validate Swedish social security numbers.
     def self.valid(str)
         if !str.respond_to?(:to_s) || !str.respond_to?(:to_i)
@@ -68,37 +113,7 @@ class Personnummer
             return false
         end
 
-        input = input.to_s
-
-        reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
-        match = reg.match(input)
-        century = match[1]
-        year = match[2]
-        month = match[3]
-        day = match[4]
-        sep = match[5]
-        num = match[6]
-        check = match[7]
-
-        if !(sep == '-' || sep == '+')
-          if (( century.nil? || !century.length) || Time.new.year - (century + year).to_i < 100)
-            sep = '-'
-          else
-            sep = '+'
-          end
-        end
-
-        if (century.nil? || !century.length)
-          d = Time.new
-          baseYear = 0
-
-          if sep == '+'
-            baseYear = d.year - 100
-          else
-            baseYear = d.year
-          end
-          century = "#{(baseYear - ((baseYear - year.to_i) % 100)).digits[-2..-1].reverse.join('')}"
-        end
+        century,year,month,day,sep,num,check = self.getParts(input)
 
         if longFormat
           return "#{century}#{year}#{month}#{day}#{num}#{check}"
