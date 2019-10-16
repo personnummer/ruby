@@ -121,4 +121,23 @@ class Personnummer
           return "#{year}#{month}#{day}#{sep}#{num}#{check}"
         end
     end
+
+    def self.getAge(input, includeCoordinationNumber = true)
+      if !self.valid(input)
+        return false
+      end
+
+      century,year,month,day,sep,num,check = self.getParts(input)
+      year = year.to_i
+      month = month.to_i
+      day = day.to_i
+
+      if (includeCoordinationNumber && day >= 61 && day < 91)
+        day = day - 60
+      end
+
+      now = Time.now.utc.to_date
+      dob = Date.parse("#{century}#{year}-#{month}-#{day}")
+      now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
+    end
 end
