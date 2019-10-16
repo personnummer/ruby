@@ -68,23 +68,42 @@ class Personnummer
             return false
         end
 
-        input.to_s
-        if input.length < 12
-          date = Date.parse(input[0..5])
-        else
-          date = Date.parse(input[0..7])
+        input = input.to_s
+
+        reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
+        match = reg.match(input)
+        century = match[1]
+        year = match[2]
+        month = match[3]
+        day = match[4]
+        sep = match[5]
+        num = match[6]
+        check = match[7]
+
+        if !(sep == '-' || sep == '+')
+          if (( century.nil? || !century.length) || Time.new.year - (century + year).to_i < 100)
+            sep = '-'
+          else
+            sep = '+'
+          end
         end
 
-        coord = input.match(/[\-|\+]/).to_s
+        if (century.nil? || !century.length)
+          d = Time.new
+          baseYear = 0
+
+          if sep == '+'
+            baseYear = d.year - 100
+          else
+            baseYear = d.year
+          end
+          century = "#{(baseYear - ((baseYear - year.to_i) % 100)).digits[-2..-1].reverse.join('')}"
+        end
 
         if longFormat
-          if coord == "-" or coord == ""
-            return "19#{date.strftime("%y%m%d")}#{input[-4..-1]}"
-          else
-            return "20#{date.strftime("%y%m%d")}#{input[-4..-1]}"
-          end
+          return "#{century}#{year}#{month}#{day}#{num}#{check}"
         else
-          return "#{date.strftime("%y%m%d")}#{coord}#{input[-4..-1]}"
+          return "#{year}#{month}#{day}#{sep}#{num}#{check}"
         end
     end
 end
