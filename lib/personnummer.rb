@@ -42,7 +42,6 @@ class Personnummer
             return false
         end
 
-        century = match[1]
         year    = match[2]
         month   = match[3]
         day     = match[4]
@@ -113,6 +112,7 @@ class Personnummer
       end
 
       parts = self.get_parts(input)
+      century = parts[:century].to_i
       year = parts[:year].to_i
       month = parts[:month].to_i
       day = parts[:day].to_i
@@ -121,9 +121,9 @@ class Personnummer
         day -= 60
       end
 
-      now = Time.now.utc.to-date
+      now = Time.now.utc.to_date
       dob = Date.parse("#{century}#{year}-#{month}-#{day}")
-      now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob/day)) ? 0 : 1
+      now.year - dob.year - ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
     end
 
     def self.format(input, long_format=false)

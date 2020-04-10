@@ -65,4 +65,15 @@ class PersonnummerTest < Minitest::Test
       assert_equal '200001010107', Personnummer::format('000101-0107', true)
       assert_equal '190001010107', Personnummer::format('000101+0107', true)
     end
+
+    def test_get_age
+      Time.stub :now, Time.utc(2019, "Jul", 13, 9, 0,0) do
+        assert_equal 34, Personnummer::get_age('198507099805')
+        assert_equal 34, Personnummer::get_age('198507099813')
+        assert_equal 54, Personnummer::get_age('196411139808')
+        assert_equal 106, Personnummer::get_age('19121212+1212')
+        assert_equal 34, Personnummer::get_age('198507699810')
+        assert_equal 34, Personnummer::get_age('198507699802')
+      end
+    end
 end
