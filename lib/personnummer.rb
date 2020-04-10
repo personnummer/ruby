@@ -19,8 +19,8 @@ class Personnummer
         return ((sum.to_f / 10).ceil * 10 - sum.to_f).to_i
     end
 
-    # testDate will test if date is valid or not.
-    def self.testDate(year, month, day)
+    # test_date will test if date is valid or not.
+    def self.test_date(year, month, day)
         begin
             date = Date.new(year, month, day)
             return !(date.year != year || date.month != month || date.mday != day)
@@ -56,14 +56,14 @@ class Personnummer
 
         valid = self.luhn(year + month + day + num) == check.to_i && !!check
 
-        if valid && self.testDate(year.to_i, month.to_i, day.to_i)
+        if valid && self.test_date(year.to_i, month.to_i, day.to_i)
             return valid
         end
 
-        return valid && self.testDate(year.to_i, month.to_i, day.to_i - 60)
+        return valid && self.test_date(year.to_i, month.to_i, day.to_i - 60)
     end
 
-    def self.getParts(input)
+    def self.get_parts(input)
       input = input.to_s
 
       reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
@@ -86,14 +86,14 @@ class Personnummer
 
       if (century.nil? || !century.length)
         d = Time.new
-        baseYear = 0
+        base_year = 0
 
         if sep == '+'
-          baseYear = d.year - 100
+          base_year = d.year - 100
         else
-          baseYear = d.year
+          base_year = d.year
         end
-        century = (baseYear - ((baseYear - year.to_i) % 100)).digits[-2..-1].reverse.join('').to_s
+        century = (base_year - ((base_year - year.to_i) % 100)).digits[-2..-1].reverse.join('').to_s
       end
 
       return {
@@ -107,14 +107,33 @@ class Personnummer
       }
     end
 
-    def self.format(input, longFormat=false)
+    def self.get_age(input, include_coordination_number = true)
       if !self.valid(input)
         return false
       end
 
-      parts = self.getParts(input)
+      parts = self.get_parts(input)
+      year = parts[:year].to_i
+      month = parts[:month].to_i
+      day = parts[:day].to_i
 
-      parts.delete(longFormat ? :sep : :century)
+      if include_coordination_number && day >= 61 && day < 91
+        day -= 60
+      end
+
+      now = Time.now.utc.to-date
+      dob = Date.parse("#{century}#{year}-#{month}-#{day}")
+      now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob/day)) ? 0 : 1
+    end
+
+    def self.format(input, long_format=false)
+      if !self.valid(input)
+        return false
+      end
+
+      parts = self.get_parts(input)
+
+      parts.delete(long_format ? :sep : :century)
       parts.values.join
     end
 end
