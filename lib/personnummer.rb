@@ -62,4 +62,59 @@ class Personnummer
 
         return valid && self.testDate(year.to_i, month.to_i, day.to_i - 60)
     end
+
+    def self.getParts(input)
+      input = input.to_s
+
+      reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
+      match = reg.match(input)
+      century = match[1]
+      year = match[2]
+      month = match[3]
+      day = match[4]
+      sep = match[5]
+      num = match[6]
+      check = match[7]
+
+      if !(sep == '-' || sep == '+')
+        if (( century.nil? || !century.length) || Time.new.year - (century + year).to_i < 100)
+          sep = '-'
+        else
+          sep = '+'
+        end
+      end
+
+      if (century.nil? || !century.length)
+        d = Time.new
+        baseYear = 0
+
+        if sep == '+'
+          baseYear = d.year - 100
+        else
+          baseYear = d.year
+        end
+        century = (baseYear - ((baseYear - year.to_i) % 100)).digits[-2..-1].reverse.join('').to_s
+      end
+
+      return {
+        century: century,
+        year: year,
+        month: month,
+        day: day,
+        sep: sep,
+        num: num,
+        check: check
+      }
+    end
+
+    def self.format(input, longFormat=false)
+      if !self.valid(input)
+        return false
+      end
+
+      parts = self.getParts(input)
+
+      parts.delete(longFormat ? :sep : :century)
+      parts.values.join
+    end
 end

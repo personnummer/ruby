@@ -46,4 +46,23 @@ class PersonnummerTest < Minitest::Test
         assert_equal false, Personnummer::valid('900161-0017')
         assert_equal false, Personnummer::valid('640893-3231')
     end
+
+    def test_format
+      assert_equal '640327-3813', Personnummer::format(6403273813)
+      assert_equal '510818-9167', Personnummer::format('510818-9167')
+      assert_equal '900101-0017', Personnummer::format('19900101-0017')
+      assert_equal '130401+2931', Personnummer::format('19130401+2931')
+      assert_equal '640823-3234', Personnummer::format('196408233234')
+      assert_equal '000101-0107', Personnummer::format('0001010107')
+      assert_equal '000101-0107', Personnummer::format('000101-0107')
+      assert_equal '130401+2931', Personnummer::format('191304012931')
+      assert_equal '196403273813', Personnummer::format(6403273813, true)
+      assert_equal '195108189167', Personnummer::format('510818-9167', true)
+      assert_equal '199001010017', Personnummer::format('19900101-0017', true)
+      assert_equal '191304012931', Personnummer::format('19130401+2931', true)
+      assert_equal '196408233234', Personnummer::format('196408233234', true)
+      assert_equal '200001010107', Personnummer::format('0001010107', true)
+      assert_equal '200001010107', Personnummer::format('000101-0107', true)
+      assert_equal '190001010107', Personnummer::format('000101+0107', true)
+    end
 end
