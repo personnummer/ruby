@@ -37,13 +37,13 @@ class PersonnummerTest < Minitest::Test
 
     def test_coordination_numbers
         assert_equal true, Personnummer::valid('198507699802')
-        assert_equal true, Personnummer::valid('850769-9802')
-        assert_equal true, Personnummer::valid('198507699810')
+        assert_equal false, Personnummer::valid('850769-9802', false)
+        assert_equal false, Personnummer::valid('198507699810', false)
         assert_equal true, Personnummer::valid('850769-9810')
     end
 
     def test_wrong_coordination_numbers
-        assert_equal false, Personnummer::valid('900161-0017')
+        assert_equal false, Personnummer::valid('900161-0017', false)
         assert_equal false, Personnummer::valid('640893-3231')
     end
 
@@ -67,11 +67,11 @@ class PersonnummerTest < Minitest::Test
     end
 
     def test_get_age
-      Time.stub :now, Time.utc(2019, "Jul", 13, 9, 0,0) do
+      Time.stub :now, Time.utc(2020, "May", 1, 9, 0,0) do
         assert_equal 34, Personnummer::get_age('198507099805')
         assert_equal 34, Personnummer::get_age('198507099813')
-        assert_equal 54, Personnummer::get_age('196411139808')
-        assert_equal 106, Personnummer::get_age('19121212+1212')
+        assert_equal 55, Personnummer::get_age('196411139808')
+        assert_equal 107, Personnummer::get_age('19121212+1212')
         assert_equal 34, Personnummer::get_age('198507699810')
         assert_equal 34, Personnummer::get_age('198507699802')
       end
