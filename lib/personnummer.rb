@@ -24,17 +24,17 @@ module Personnummer
         return false
       end
 
-      is_valid = luhn(@year + @month + @day + @num) == @check.to_i
+      is_valid = ::Personnummer.luhn(@year + @month + @day + @num) == @check.to_i
 
-      if is_valid && test_date(@year.to_i, @month.to_i, @day.to_i)
+      if is_valid && ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i)
         return true
       end
 
-      return is_valid && test_date(@year, @month, @day.to_i - 60)
+      return is_valid && ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i - 60)
     end
 
     def is_coord
-      test_date(@year, @month, @day - 60)
+      ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i - 60)
     end
 
     def format(long_format=false)
@@ -48,8 +48,7 @@ module Personnummer
     def get_age
       today = Time.new
       
-      century = @century.to_i
-      year = @year.to_i
+      year = "#{@century}#{@year}".to_i
       month = @month.to_i
       day = @day.to_i
 
@@ -57,8 +56,7 @@ module Personnummer
         day -= 60
       end
 
-      dob = Date.parse("#{century}#{year}-#{month}-#{day}")
-      now.year - dob.year - ((now.month > dob/month | (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
+      return today.year - year - ((today.month > month || (today.month == month && today.day >= day)) ? 0 : 1)
     end
 
     def get_parts(personnummer)
@@ -87,7 +85,7 @@ module Personnummer
         full_year = base_year - ((base_year - year.to_i) % 100)
         century = (full_year / 100).to_s
       else
-        if Time.new.year - (century + year).to_int < 100
+        if Time.new.year - (century + year).to_i < 100
           sep = '-'
         else
           sep = '+'
@@ -107,8 +105,12 @@ module Personnummer
   end
 
   def self.test_date(year, month, day)
+    begin
       date = Date.new(year, month, day)
       return !(date.year != year || date.month != month || date.day != day)
+    rescue Date::Error, TypeError
+      false
+    end
   end
 
   def self.luhn(str)
@@ -130,12 +132,24 @@ module Personnummer
     Personnummer.new(personnummer)
   end
 
-  def self.valid(personnummer)
+  def self.format(personnummer, long_format=false)
+    nummer = parse(personnummer)
+    nummer.format(long_format)
+  end
+
+  def self.valid(personnummer, include_coord=true)
     begin
-      parse(personnummer)
+      nummer = parse(personnummer)
+      if nummer.is_coord
+        return false
+      end
       true
     rescue RuntimeError
       false
     end
+  end
+
+  def self.get_age(personnummer)
+    Personnummer.new(personnummer).get_age
   end
 end
