@@ -140,7 +140,7 @@ module Personnummer
   def self.valid(personnummer, include_coord=true)
     begin
       nummer = parse(personnummer)
-      if nummer.is_coord
+      if !include_coord && nummer.is_coord
         return false
       end
       true
