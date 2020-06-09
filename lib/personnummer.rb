@@ -45,6 +45,15 @@ module Personnummer
       return today.year - year - ((today.month > month || (today.month == month && today.day >= day)) ? 0 : 1)
     end
 
+    def is_male?
+      sexDigit = @num[-1].to_i
+      sexDigit % 2 == 1
+    end
+
+    def is_female?
+      !is_male?
+    end
+
     private
 
     def get_parts(personnummer)
