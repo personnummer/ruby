@@ -140,8 +140,8 @@ module Personnummer
   end
 
 
-  def self.parse(personnummer) 
-    Personnummer.new(personnummer)
+  def self.parse(personnummer, options={})
+    Personnummer.new(personnummer, options={})
   end
 
   def self.valid?(personnummer, include_coord=true)
