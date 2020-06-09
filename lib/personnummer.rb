@@ -19,20 +19,6 @@ module Personnummer
       end
     end
 
-    def valid
-      if @check.length == 0
-        return false
-      end
-
-      is_valid = ::Personnummer.luhn(@year + @month + @day + @num) == @check.to_i
-
-      if is_valid && ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i)
-        return true
-      end
-
-      return is_valid && ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i - 60)
-    end
-
     def is_coord
       ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i - 60)
     end
@@ -101,6 +87,22 @@ module Personnummer
         num: num,
         check: check
       }
+    end
+
+    private
+    
+    def valid
+      if @check.length == 0
+        return false
+      end
+
+      is_valid = ::Personnummer.luhn(@year + @month + @day + @num) == @check.to_i
+
+      if is_valid && ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i)
+        return true
+      end
+
+      return is_valid && ::Personnummer.test_date(@year.to_i, @month.to_i, @day.to_i - 60)
     end
   end
 
