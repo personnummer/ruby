@@ -4,7 +4,7 @@ require 'date'
 module Personnummer
   class Personnummer
     def initialize(personnummer, options={})
-      parts = self.get_parts(personnummer)
+      parts = get_parts(personnummer)
       # Create instance variable and getter/setter for each pair in `parts` hash
       parts.each do |k,v|
         instance_variable_set("@#{k}", v)
