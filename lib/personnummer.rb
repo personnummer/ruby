@@ -116,12 +116,7 @@ module Personnummer
     # Checks if the given values form a valid date
     # (TrueClass/FalseClass)
     def test_date(year, month, day)
-      begin
-        date = Date.new(year, month, day)
-        return !(date.year != year || date.month != month || date.day != day)
-      rescue Date::Error, TypeError
-        false
-      end
+      Date.valid_date?(year, month, day)
     end
     
     # Checks if the Personnummer is valid
