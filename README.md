@@ -17,7 +17,7 @@ Then run `bundle install`
 ```ruby
 require 'personnummer'
 
-puts Personnummer::valid("8507099805")
+puts Personnummer.valid?("8507099805")
 # => True
 ```
 
