@@ -5,6 +5,7 @@ module Personnummer
   class Personnummer
     def initialize(personnummer, options={})
       parts = self.get_parts(personnummer)
+      # Create instance variable and getter/setter for each pair in `parts` hash
       parts.each do |k,v|
         instance_variable_set("@#{k}", v)
         eigenclass = class<<self; self; end
@@ -19,10 +20,13 @@ module Personnummer
       end
     end
 
+    # Checks if the Personnummer is a coordination number (Samordningsnummer)
+    # (TrueClass/FalseClass)
     def is_coord
       test_date(@year.to_i, @month.to_i, @day.to_i - 60)
     end
 
+    # Returns the short/long formatted number
     def format(long_format=false)
       if long_format
         [@century,@year,@month,@day,@num,@check].join
@@ -31,6 +35,8 @@ module Personnummer
       end
     end
 
+    # Returns the age of the Personnummer's owner
+    # (Integer)
     def get_age
       today = Time.new
       
@@ -45,24 +51,31 @@ module Personnummer
       return today.year - year - ((today.month > month || (today.month == month && today.day >= day)) ? 0 : 1)
     end
 
+    # Checks if the Personnummer's owner is male
+    # (TrueClass/FalseClass)
     def is_male?
       sexDigit = @num[-1].to_i
       sexDigit % 2 == 1
     end
 
+    # Checks if the Personnummer's owner is female
+    # (TrueClass/FalseClass)
     def is_female?
       !is_male?
     end
 
     private
 
+    # Regex magic to split the input into parts hash.
+    # Raises error if regex is refused.
+    # (Hash)
     def get_parts(personnummer)
       reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
       match = personnummer.to_s.match(reg)
 
       if !match
         raise "Could not parse #{personnummer} as a valid Personnummer"
-    end
+      end
     
       century = match[1]
       year = match[2]
@@ -100,6 +113,8 @@ module Personnummer
       }
     end
 
+    # Checks if the given values form a valid date
+    # (TrueClass/FalseClass)
     def test_date(year, month, day)
       begin
         date = Date.new(year, month, day)
@@ -109,6 +124,8 @@ module Personnummer
       end
     end
     
+    # Checks if the Personnummer is valid
+    # (TrueClass/FalseClass)
     def valid
       if @check.length == 0
         return false
@@ -123,6 +140,8 @@ module Personnummer
       return is_valid && test_date(@year.to_i, @month.to_i, @day.to_i - 60)
     end
 
+    # Implementation of Luhn algorithm for calculating Personnummer checksum
+    # (Integer)
     def luhn(str)
       sum = 0
 
@@ -139,11 +158,14 @@ module Personnummer
     end
   end
 
-
+  # Return Personnummer object from given string/integer with options
+  # (Personnummer)
   def self.parse(personnummer, options={})
     Personnummer.new(personnummer, options={})
   end
 
+  # Check validity of string/integer input as Personnummer
+  # (TrueClass/FalseClass)
   def self.valid?(personnummer, include_coord=true)
     begin
       nummer = parse(personnummer)
