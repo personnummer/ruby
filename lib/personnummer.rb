@@ -70,7 +70,7 @@ module Personnummer
     # Raises error if regex is refused.
     # (Hash)
     def get_parts(personnummer)
-      reg = /^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$/;
+      reg = /(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-\s]?)((?!000)\d{3})(\d)/;
       match = personnummer.to_s.match(reg)
 
       if !match
