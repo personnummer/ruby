@@ -33,6 +33,7 @@ class PersonnummerTest < Minitest::Test
         assert_equal false, Personnummer::valid?('990919+3776')
         assert_equal false, Personnummer::valid?('990919-3776')
         assert_equal false, Personnummer::valid?('9909193776')
+        assert_equal false, Personnummer::valid?('20150916-0006')
     end
 
     def test_coordination_numbers
