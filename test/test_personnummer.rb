@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'timecop'
 require 'personnummer'
 
 class PersonnummerTest < Minitest::Test
@@ -68,7 +69,7 @@ class PersonnummerTest < Minitest::Test
     end
 
     def test_get_age
-      Time.stub :now, Time.utc(2020, "May", 1, 9, 0,0) do
+      Timecop.freeze(Time.utc(2020, "May", 1, 9, 0,0)) do
         assert_equal 34, Personnummer.parse('198507099805').get_age
         assert_equal 34, Personnummer.parse('198507099813').get_age
         assert_equal 55, Personnummer.parse('196411139808').get_age
