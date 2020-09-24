@@ -1,4 +1,4 @@
-# personnummer [![Build Status](https://secure.travis-ci.org/personnummer/ruby.svg?branch=master)](http://travis-ci.org/personnummer/ruby)
+# personnummer [![Build Status](https://github.com/personnummer/ruby/workflows/build/badge.svg)](https://github.com/personnummer/ruby/actions)
 
 Validate personal identity numbers.
 
