@@ -39,7 +39,7 @@ module Personnummer
     # (Integer)
     def get_age
       today = Time.new
-      
+
       year = "#{@century}#{@year}".to_i
       month = @month.to_i
       day = @day.to_i
@@ -70,13 +70,13 @@ module Personnummer
     # Raises error if regex is refused.
     # (Hash)
     def get_parts(personnummer)
-      reg = /(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-\s]?)((?!000)\d{3})(\d)/;
+      reg = /(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)/;
       match = personnummer.to_s.match(reg)
 
       if !match
         raise "Could not parse #{personnummer} as a valid Personnummer"
       end
-    
+
       century = match[1]
       year = match[2]
       month = match[3]
@@ -101,7 +101,7 @@ module Personnummer
           sep = '+'
         end
       end
-      
+
       return {
         century: century,
         year: year,
@@ -118,7 +118,7 @@ module Personnummer
     def test_date(year, month, day)
       Date.valid_date?(year, month, day)
     end
-    
+
     # Checks if the Personnummer is valid
     # (TrueClass/FalseClass)
     def valid
