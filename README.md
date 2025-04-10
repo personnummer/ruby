@@ -1,4 +1,4 @@
-# personnummer [![Build Status](https://github.com/personnummer/ruby/workflows/build/badge.svg)](https://github.com/personnummer/ruby/actions)
+# personnummer [![build](https://github.com/personnummer/ruby/actions/workflows/ruby.yml/badge.svg)](https://github.com/personnummer/ruby/actions/workflows/ruby.yml)
 
 Validate personal identity numbers.
 
