@@ -116,7 +116,8 @@ module Personnummer
     # Checks if the given values form a valid date
     # (TrueClass/FalseClass)
     def test_date(year, month, day)
-      Date.valid_date?(year, month, day)
+      # Date.valid_date? counts negative days from the end of the month, so e.g. day 30 - 60 would pass.
+      day > 0 && Date.valid_date?(year, month, day)
     end
 
     # Checks if the Personnummer is valid
