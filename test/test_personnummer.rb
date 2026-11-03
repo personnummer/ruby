@@ -48,6 +48,13 @@ class PersonnummerTest < Minitest::Test
     def test_wrong_coordination_numbers
         assert_equal false, Personnummer::valid?('900161-0017', false)
         assert_equal false, Personnummer::valid?('640893-3231')
+        assert_equal false, Personnummer::valid?('750232-4630')
+    end
+
+    def test_is_coord
+        assert_equal true, Personnummer.parse('850769-9810').is_coord
+        assert_equal false, Personnummer.parse('850709-9813').is_coord
+        assert_equal false, Personnummer.parse('750330-4631').is_coord
     end
 
     def test_format
