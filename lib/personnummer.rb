@@ -23,7 +23,7 @@ module Personnummer
     # Checks if the Personnummer is a coordination number (Samordningsnummer)
     # (TrueClass/FalseClass)
     def is_coord
-      test_date(@year.to_i, @month.to_i, @day.to_i - 60)
+      test_date(full_year, @month.to_i, @day.to_i - 60)
     end
 
     # Returns the short/long formatted number
@@ -113,6 +113,12 @@ module Personnummer
       }
     end
 
+    # With the century, since e.g. 1900 is not a leap year, but year 0 is.
+    # (Integer)
+    def full_year
+      "#{@century}#{@year}".to_i
+    end
+
     # Checks if the given values form a valid date
     # (TrueClass/FalseClass)
     def test_date(year, month, day)
@@ -128,11 +134,11 @@ module Personnummer
 
       is_valid = luhn(@year + @month + @day + @num) == @check.to_i
 
-      if is_valid && test_date(@year.to_i, @month.to_i, @day.to_i)
+      if is_valid && test_date(full_year, @month.to_i, @day.to_i)
         return true
       end
 
-      return is_valid && test_date(@year.to_i, @month.to_i, @day.to_i - 60)
+      return is_valid && test_date(full_year, @month.to_i, @day.to_i - 60)
     end
 
     # Implementation of Luhn algorithm for calculating Personnummer checksum
