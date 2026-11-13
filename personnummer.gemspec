@@ -15,6 +15,11 @@ Gem::Specification.new do |s|
     s.require_paths = ["lib"]
     s.homepage    = 'https://github.com/personnummer/ruby'
     s.license     = 'MIT'
+    # RubyGems falls back to links stored for the 0.x gem when these are missing.
+    s.metadata    = {
+        'source_code_uri'   => 'https://github.com/personnummer/ruby',
+        'documentation_uri' => 'https://www.rubydoc.info/gems/personnummer'
+    }
     # The oldest Ruby in the CI matrix.
     s.required_ruby_version = '>= 3.3'
     s.add_development_dependency 'rake'
