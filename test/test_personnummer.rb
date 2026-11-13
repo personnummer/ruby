@@ -57,6 +57,18 @@ class PersonnummerTest < Minitest::Test
         assert_equal false, Personnummer.parse('750330-4631').is_coord
     end
 
+    def test_leap_days
+        # 2000 is a leap year.
+        assert_equal true, Personnummer::valid?('20000229-1540')
+        assert_equal true, Personnummer::valid?('000229-1540')
+        assert_equal true, Personnummer::valid?('20000289-1547')
+
+        # 1900 is not.
+        assert_equal false, Personnummer::valid?('19000229-1540')
+        assert_equal false, Personnummer::valid?('000229+1540')
+        assert_equal false, Personnummer::valid?('19000289-1547')
+    end
+
     def test_format
       assert_equal '640327-3813', Personnummer.parse(6403273813).format
       assert_equal '510818-9167', Personnummer.parse('510818-9167').format
