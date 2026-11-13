@@ -2,6 +2,14 @@
 require 'date'
 
 module Personnummer
+  # Inherits from RuntimeError so existing `rescue RuntimeError` keeps working
+  class Error < RuntimeError; end
+
+  DEFAULT_OPTIONS = {
+    allow_coordination_number: true,
+    allow_interim_number: false
+  }.freeze
+
   class Personnummer
     def initialize(personnummer, options={})
       parts = get_parts(personnummer)
@@ -13,10 +21,18 @@ module Personnummer
           attr_accessor k
         end
       end
-      @options = options
+      @options = DEFAULT_OPTIONS.merge(options || {})
 
       if !valid
-        raise "Invalid Personnummer"
+        raise Error, "Invalid Personnummer"
+      end
+
+      if !@options[:allow_coordination_number] && is_coord
+        raise Error, "Coordination numbers are not allowed"
+      end
+
+      if !@options[:allow_interim_number] && is_interim
+        raise Error, "Interim numbers are not allowed"
       end
     end
 
@@ -24,6 +40,12 @@ module Personnummer
     # (TrueClass/FalseClass)
     def is_coord
       test_date(full_year, @month.to_i, @day.to_i - 60)
+    end
+
+    # Checks if the Personnummer is an interim number (T-nummer)
+    # (TrueClass/FalseClass)
+    def is_interim
+      @num.match?(/\A[TRSUWXJKLMN]/)
     end
 
     # Returns the short/long formatted number
@@ -39,16 +61,18 @@ module Personnummer
     # (Integer)
     def get_age
       today = Time.new
+      date = get_date
 
-      year = "#{@century}#{@year}".to_i
-      month = @month.to_i
+      return today.year - date.year - ((today.month > date.month || (today.month == date.month && today.day >= date.day)) ? 0 : 1)
+    end
+
+    # Returns the date of birth, with the 60 day offset of coordination numbers removed
+    # (Date)
+    def get_date
       day = @day.to_i
+      day -= 60 if is_coord
 
-      if is_coord
-        day -= 60
-      end
-
-      return today.year - year - ((today.month > month || (today.month == month && today.day >= day)) ? 0 : 1)
+      Date.new(full_year, @month.to_i, day)
     end
 
     # Checks if the Personnummer's owner is male
@@ -67,14 +91,14 @@ module Personnummer
     private
 
     # Regex magic to split the input into parts hash.
-    # Raises error if regex is refused.
+    # Raises Error if regex is refused.
     # (Hash)
     def get_parts(personnummer)
-      reg = /(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3})(\d)/;
+      reg = /\A(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\+\-]?)((?!000)\d{3}|[TRSUWXJKLMN]\d{2})(\d)\z/
       match = personnummer.to_s.match(reg)
 
       if !match
-        raise "Could not parse #{personnummer} as a valid Personnummer"
+        raise Error, "Could not parse #{personnummer} as a valid Personnummer"
       end
 
       century = match[1]
@@ -133,7 +157,7 @@ module Personnummer
         return false
       end
 
-      is_valid = luhn(@year + @month + @day + @num) == @check.to_i
+      is_valid = luhn(@year + @month + @day + @num.sub(/\A[TRSUWXJKLMN]/, '1')) == @check.to_i
 
       if is_valid && test_date(full_year, @month.to_i, @day.to_i)
         return true
@@ -163,19 +187,19 @@ module Personnummer
   # Return Personnummer object from given string/integer with options
   # (Personnummer)
   def self.parse(personnummer, options={})
-    Personnummer.new(personnummer, options={})
+    Personnummer.new(personnummer, options)
   end
 
   # Check validity of string/integer input as Personnummer
   # (TrueClass/FalseClass)
-  def self.valid?(personnummer, include_coord=true)
+  # Anything but a hash in place of the options is the old include_coord flag
+  def self.valid?(personnummer, options={})
+    options = {allow_coordination_number: !!options} unless options.is_a?(Hash)
+
     begin
-      nummer = parse(personnummer)
-      if !include_coord && nummer.is_coord
-        return false
-      end
+      parse(personnummer, options)
       true
-    rescue RuntimeError
+    rescue Error
       false
     end
   end
