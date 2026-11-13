@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
     s.date        = '2026-11-13'
     s.summary     = 'Validate Swedish social security numbers'
     s.description = 'Validate Swedish social security numbers'
-    s.authors     = ['Jack Millard']
+    s.authors     = ['Jack Millard', 'Rasmus Graham']
     s.email       = ['millard64@hotmail.co.uk']
     s.files         = `git ls-files`.split("\n")
     s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
