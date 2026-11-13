@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
     s.name        = 'personnummer'
-    s.version     = '3.0.3'
+    s.version     = '3.1.0'
     s.date        = '2026-11-13'
     s.summary     = 'Validate Swedish social security numbers'
     s.description = 'Validate Swedish social security numbers'
