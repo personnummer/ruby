@@ -1,0 +1,50 @@
+
+name: publish
+
+on:
+  # Publishing a GitHub release creates the tag and pushes the gem.
+  release:
+    types: [published]
+
+  # A manual run tests, builds and signs in to RubyGems, but does not push.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rubygems:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      # Trusted publishing: RubyGems swaps the OIDC token for a short-lived API key.
+      id-token: write
+
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+      with:
+        ruby-version: '3.4'
+    - name: gem install
+      run: gem install minitest timecop
+    - name: test
+      run: rake
+    # A published version cannot be replaced, so stop before the push if the
+    # release was tagged without the version bump.
+    - name: Check that the tag matches the gemspec version
+      if: github.event_name == 'release'
+      run: |
+        version=$(ruby -e 'puts Gem::Specification.load("personnummer.gemspec").version')
+        if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+          echo "::error::Tag $GITHUB_REF_NAME does not match gemspec version $version"
+          exit 1
+        fi
+    - name: build
+      run: gem build personnummer.gemspec
+    - name: Sign in to RubyGems
+      uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
+    - name: push
+      if: github.event_name == 'release'
+      run: gem push personnummer-*.gem
