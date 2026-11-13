@@ -15,6 +15,8 @@ Gem::Specification.new do |s|
     s.require_paths = ["lib"]
     s.homepage    = 'https://github.com/personnummer/ruby'
     s.license     = 'MIT'
+    # The oldest Ruby in the CI matrix.
+    s.required_ruby_version = '>= 3.3'
     s.add_development_dependency 'rake'
     s.add_development_dependency 'minitest'
     s.add_development_dependency 'timecop'

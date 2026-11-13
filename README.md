@@ -2,12 +2,14 @@
 
 Validate personal identity numbers.
 
+Versions 0.x of the `personnummer` gem are a different library, [c7/personnummer](https://github.com/c7/personnummer) by Peter Hellberg, who handed the gem name over to this project. They are still on RubyGems, and a Gemfile with `gem 'personnummer', '~> 0.1'` keeps getting them. The API there is `Personnummer.new('830428-5912').valid?`, here it is `Personnummer.valid?('830428-5912')`.
+
 ## Installation
 
 Add this to your `Gemfile`
 
 ```
-gem 'personnummer', :git => 'https://github.com/personnummer/ruby.git'
+gem 'personnummer'
 ```
 
 Then run `bundle install`
